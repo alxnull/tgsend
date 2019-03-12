@@ -1,7 +1,7 @@
 # tgsend - Telegram Messaging Tool
 
 [![PyPI](https://img.shields.io/pypi/v/tgsend.svg)](https://pypi.org/project/tgsend/)
-[![GitHub](https://img.shields.io/github/license/bluegrams/tgsend.svg)](https://github.com/bluegrams/tgsend/blob/master/LICENSE.txt)
+[![GitHub](https://img.shields.io/github/license/alxnull/tgsend.svg)](https://github.com/alxnull/tgsend/blob/master/LICENSE.txt)
 
 tgsend is a little Python module to send messages, photos and documents to Telegram chats via a Telegram bot. tgsend can be used either as a command line tool or as a module for Python 3.
 
@@ -36,8 +36,6 @@ telegram = Telegram("your-bot-token", "your-chat-id")
 telegram.send_message("This is a text with *bold* and _italic_ words.", title="The Title",
                         parse_mode=ParseMode.MARKDOWN)
 ```
-
-See the [source file](tgsend.py) for other options.
 
 ### From Command Line
 
@@ -102,11 +100,6 @@ tgsend -l ~/tgsend/botconfig.conf "Some text"
 ```
 tgsend will now look for the `[Default]` section in the given configuration file.
 
-Of course, both options can also be used from within a python script:
-```python
-telegram = Telegram.load(name="AltConfig", config_file="~/tgsend/botconfig.conf")
-```
-
 ## License
 
-This software is pusblished under [BSD-3-Clause license](https://github.com/bluegrams/tgsend/blob/master/LICENSE.txt) by Bluegrams.
+This software is pusblished under [BSD-3-Clause license](https://github.com/alxnull/tgsend/blob/master/LICENSE.txt).

@@ -12,10 +12,10 @@ setup(
     description='Send messages to Telegram chats from Python and the command line',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author='Bluegrams',
+    author='Alex C.P. (alxnull)',
     author_email="bluegrams@e.mail.de",
     license="BSD-3-Clause",
-    url="https://github.com/bluegrams/tgsend",
+    url="https://github.com/alxnull/tgsend",
     py_modules=['tgsend'],
     entry_points={
         'console_scripts': ['tgsend = tgsend:main']
