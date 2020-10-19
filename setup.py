@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 
 from setuptools import setup
-from tgsend import __version__
 
 with open("README.md", "r") as f:
     long_description = f.read()
 
 setup(
     name='tgsend',
-    version=__version__,
+    version="0.3",
     description='Send messages to Telegram chats from Python and the command line',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author='Alex C.P. (alxnull)',
-    author_email="bluegrams@e.mail.de",
+    author='Alex P. (alxnull)',
+    author_email="alxnull@e.mail.de",
     license="BSD-3-Clause",
     url="https://github.com/alxnull/tgsend",
     py_modules=['tgsend'],

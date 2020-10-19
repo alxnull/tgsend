@@ -10,6 +10,7 @@ tgsend is a little Python module to send messages, photos and documents to Teleg
 1. Create a Telegram Bot with the help of [@BotFather](https://t.me/BotFather) and take note of the bot token.
 2. Start a new chat with your bot or add it to a group where the messages should be sent to.
 Find out your personal chat ID or the chat ID of the group chat, e.g. by using [@Echo_ID_Bot](https://t.me/Echo_ID_Bot).
+_Important:_ Telegram Bots are shy, so you have to send the first message in a chat with them.
 3. Install tgsend with pip:
 ```bash
 sudo pip3 install tgsend
@@ -25,17 +26,6 @@ tgsend "Hello World"
 ```
 
 ## Usage
-
-### In Python
-Example:
-```python
-from tgsend import Telegram, ParseMode
-# token and chat ID will be searched in config files if not specified here
-telegram = Telegram("your-bot-token", "your-chat-id")
-# send a text message
-telegram.send_message("This is a text with *bold* and _italic_ words.", title="The Title",
-                        parse_mode=ParseMode.MARKDOWN)
-```
 
 ### From Command Line
 
@@ -59,6 +49,16 @@ Send a file:
 tgsend --doc log.txt "Log file"
 ```
 
+Send a video:
+```bash
+tgsend --video video.mp4 "Video caption"
+```
+
+Send a sticker:
+```bash
+tgsend --sticker sticker.webp
+```
+
 Read from stdin:
 ```bash
 cat greeting.txt | tgsend -
@@ -66,15 +66,30 @@ cat greeting.txt | tgsend -
 
 Type `tgsend --help` to see all options.
 
+### In Python
+Example:
+```python
+from tgsend import Telegram, ParseMode
+# token and chat ID will be searched in config files if not specified here
+telegram = Telegram("your-bot-token", "your-chat-id")
+# send a text message
+telegram.send_message(
+    "This is a text with *bold* and _italic_ words.",
+    title="The Title",
+    parse_mode=ParseMode.MARKDOWN
+)
+```
+
 ## Configuration
 
 A configuration for tgsend always consists of a bot token and a chat ID.
 These values can be either set through environment variables (as shown above) or through a configuration file.
 
-### Global configuration
+### Per-user and global configuration
 
-You can place a global configuration file at `/etc/tgsend.conf`. If no environment variables are specified,
-tgsend will look for the required values in this file. The format of this configuration file should look like this:
+You can place a per-user configuration file at `~/tgsend.conf` and a global configuration file at `/etc/tgsend.conf`.
+If no environment variables are specified, tgsend will look for the required values in these files in the given order.
+The format of this configuration file should look like this:
 ```
 [Default]
 BotToken = your_bot_token
