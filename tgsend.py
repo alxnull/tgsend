@@ -130,6 +130,11 @@ class Telegram:
             return text
 
     def _text(self, text, title, parse_mode, icon):
+        # replace Markdown V2 special characters
+        for c in "_*[]()~>#+-=|{}.!":
+            text = text.replace(c, "\\" + c)
+            title = title.replace(c, "\\" + c)
+
         s = icon + " "
         if title:
             s += self.format_bold(title, parse_mode) + "\n\n"
