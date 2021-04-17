@@ -19,7 +19,7 @@ CHAT_ID = os.environ.get("TGSEND_CHATID")
 
 
 class ParseMode:
-    NONE = ""
+    NONE = "none"
     MARKDOWN = "markdown"
     MARKDOWN_V2 = "markdownV2"
     HTML = "html"
@@ -135,6 +135,13 @@ class Telegram:
             s += self.format_bold(title, parse_mode) + "\n\n"
         return s + text
 
+    def _to_real_parse_mode(self, parse_mode):
+        parse_mode = parse_mode or self.parse_mode
+        if parse_mode == ParseMode.NONE:
+            return ""
+        else:
+            return parse_mode
+
     def send_message(
         self,
         text,
@@ -156,7 +163,7 @@ class Telegram:
             s = self.format_fixed(s, parse_mode)
         params = {
             "chat_id": chat_id or self.chat_id,
-            "parse_mode": parse_mode or self.parse_mode,
+            "parse_mode": self._to_real_parse_mode(parse_mode),
             "text": s,
             "disable_notification": str(silent),
             "disable_web_page_preview": str(disable_web_page_preview),
@@ -173,7 +180,7 @@ class Telegram:
         s = self._text(text or "", text_title, p_m or self.parse_mode, icon if icon else Telegram._icons[lvl])
         params = {
             "chat_id": chat_id or self.chat_id,
-            "parse_mode": p_m or self.parse_mode,
+            "parse_mode": self._to_real_parse_mode(p_m),
             "caption": s,
             "disable_notification": str(silent),
             "reply_to_message_id": int(reply_to_message_id) if reply_to_message_id else None,
@@ -427,7 +434,7 @@ class Telegram:
         allows_multiple_answers=False,
         correct_option_id=None,
         explanation=None,
-        explanation_parse_mode=ParseMode.NONE,
+        explanation_parse_mode=None,
         open_period=None,
         close_date=None,
         is_closed=False,
@@ -488,7 +495,7 @@ def main():
     parser.add_argument(
         "--format",
         default="markdownV2",
-        choices=["html", "markdown", "markdownV2" "none"],
+        choices=["html", "markdown", "markdownV2", "none"],
         help="the formatting used for the text (default: markdownV2)",
         dest="parse_mode",
     )
