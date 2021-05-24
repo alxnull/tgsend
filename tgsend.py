@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-__version__ = "0.3"
+__version__ = "0.3.2"
 
 import configparser
 import json
@@ -188,7 +188,14 @@ class Telegram:
         if method == "/sendAudio":
             params["title"] = title
         params.update(kwargs)
-        return requests.post(BOT_API_URL + self.token + method, data=params, files=files)
+        # determine if files should be sent as stream or url
+        file_streams = {}
+        for k, v in files.items():
+            if os.path.isfile(v):
+                file_streams[k] = open(v, "rb")
+            else:
+                params[k] = v
+        return requests.post(BOT_API_URL + self.token + method, data=params, files=file_streams)
 
     def send_photo(
         self,
@@ -203,7 +210,7 @@ class Telegram:
         reply_to_message_id=None,
     ):
         """Send a photo to a Telegram chat."""
-        files = {"photo": open(photo, "rb")}
+        files = {"photo": photo}
         return self._send_file_helper(
             chat_id, "/sendPhoto", files, text, title, parse_mode, level, icon, silent, reply_to_message_id
         )
@@ -222,9 +229,9 @@ class Telegram:
         reply_to_message_id=None,
     ):
         """Send a general file to a Telegram chat."""
-        files = {"document": open(document, "rb")}
+        files = {"document": document}
         if thumb:
-            files["thumb"] = open(thumb, "rb")
+            files["thumb"] = thumb
         return self._send_file_helper(
             chat_id, "/sendDocument", files, text, title, parse_mode, level, icon, silent, reply_to_message_id
         )
@@ -246,14 +253,14 @@ class Telegram:
     ):
         """Send an audio file to a Telegram chat."""
         files = {
-            "audio": open(audio, "rb"),
+            "audio": audio,
         }
         kwargs = {
             "duration": duration,
             "performer": performer,
         }
         if thumb:
-            files["thumb"] = open(thumb, "rb")
+            files["thumb"] = thumb
         return self._send_file_helper(
             chat_id, "/sendAudio", files, text, title, parse_mode, level, icon, silent, reply_to_message_id, **kwargs
         )
@@ -277,7 +284,7 @@ class Telegram:
     ):
         """Send a video file to a Telegram chat."""
         files = {
-            "video": open(video, "rb"),
+            "video": video,
         }
         kwargs = {
             "duration": duration,
@@ -286,7 +293,7 @@ class Telegram:
             "supports_streaming": str(supports_streaming),
         }
         if thumb:
-            files["thumb"] = open(thumb, "rb")
+            files["thumb"] = thumb
         return self._send_file_helper(
             chat_id, "/sendVideo", files, text, title, parse_mode, level, icon, silent, reply_to_message_id, **kwargs
         )
@@ -309,7 +316,7 @@ class Telegram:
     ):
         """Send a video file to a Telegram chat."""
         files = {
-            "animation": open(animation, "rb"),
+            "animation": animation,
         }
         kwargs = {
             "duration": duration,
@@ -317,7 +324,7 @@ class Telegram:
             "height": height,
         }
         if thumb:
-            files["thumb"] = open(thumb, "rb")
+            files["thumb"] = thumb
         return self._send_file_helper(
             chat_id,
             "/sendAnimation",
@@ -347,7 +354,7 @@ class Telegram:
     ):
         """Send a voice message file to a Telegram chat. The sent file must be a .ogg file encoded with OPUS."""
         files = {
-            "voice": open(voice, "rb"),
+            "voice": voice,
         }
         kwargs = {
             "duration": duration,
@@ -477,7 +484,7 @@ class Telegram:
             "disable_notification": str(silent),
             "reply_to_message_id": int(reply_to_message_id) if reply_to_message_id else None,
         }
-        files = {"sticker": open(sticker, "rb")}
+        files = {"sticker": sticker}
         return requests.post(BOT_API_URL + self.token + "/sendSticker", data=params, files=files)
 
 
@@ -612,6 +619,10 @@ def main():
         response = telegram.send_sticker(args.sticker, chat_id=args.id, silent=args.silent)
     else:
         text = sys.stdin.read() if args.text == "-" else args.text
+        # print help if no text is given
+        if text is None:
+            parser.print_help()
+            exit()
         response = telegram.send_message(
             text,
             title=args.title,

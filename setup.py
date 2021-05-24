@@ -7,7 +7,7 @@ with open("README.md", "r") as f:
 
 setup(
     name='tgsend',
-    version="0.3.1",
+    version="0.3.2",
     description='Send messages to Telegram chats from Python and the command line',
     long_description=long_description,
     long_description_content_type="text/markdown",
